@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    # 
+    continue-on-error: true
+    # JDBC ドライバのクラス名
+    driver-class-name: org.postgresql.Driver
+    # 接続先 URL
+    url: jdbc:postgresql://localhost:5432/postgres
+    # 接続ユーザ名
+    username: postgres
+    # 接続パスワード
+    password: admin

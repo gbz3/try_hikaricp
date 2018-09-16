@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- デフォルト設定読み込み -->
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <!--rootログレベルと使用出力ルール -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+ 
+</configuration>

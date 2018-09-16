@@ -33,17 +33,23 @@ public class TryHikaricpApplication {
 	public String post( @PathVariable("cmd") String cmd, @RequestBody RequestResource rr ) throws Exception {
 		logger.info( "cmd={} rr={}", cmd, rr.getParams() );
 		
-		final DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		def.setTimeout( 5 );	// TODO prop
-		
-		TransactionStatus stat = tx.getTransaction( def );
 		try {
-			final String result = dao.finaAll().stream().map( s -> "id=" + s.getId() + " name=" + s.getName() + " email=" + s.getEmail() ).collect( Collectors.joining( "\n" ) );
+		
+			final DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+			def.setTimeout( 5 );	// TODO prop
 			
-			tx.commit( stat );
-			return result;
+			TransactionStatus stat = tx.getTransaction( def );
+			try {
+				final String result = dao.finaAll().stream().map( s -> "id=" + s.getId() + " name=" + s.getName() + " email=" + s.getEmail() ).collect( Collectors.joining( "\n" ) );
+				
+				tx.commit( stat );
+				return result;
+			} catch ( Exception e ) {
+				tx.rollback( stat );
+				throw e;
+			}
 		} catch ( Exception e ) {
-			tx.rollback( stat );
+			logger.error( e.getMessage(), e );
 			throw e;
 		}
 	}
