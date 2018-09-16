@@ -10,13 +10,13 @@ spring:
     password: admin
     # HikariCP 利用を明示
     type: com.zaxxer.hikari.HikariDataSource
-    # Spring Boot 2.1.x にバンドルされている HikariCP 3.2.0 での設定
+    # Spring Boot 2.1.x にバンドルされている HikariCP 3.2.0 での設定。デバッグログで表示されるプロパティが対象。時間は全てミリ秒指定。  https://github.com/brettwooldridge/HikariCP
     hikari:
       # JMXで pool を休眠/再開可能とする。自動フェイルオーバ可能な環境であれば有用？未検証。
       allow-pool-suspension: false
       # 自動コミット: 明示的トランザクション管理を行うので無効化
       auto-commit: false
-      # JDBC カタログを指定する。ドライバのデフォルト値を使用するため明示的に指定しない。なお、Oracle ではカタログは提供しない。 http://hito4-t.hatenablog.com/entry/2015/03/03/141502
+      # JDBC カタログを指定する。ドライバのデフォルト値を使用するため明示的に指定しない。なお、Oracle はカタログを提供しない。 http://hito4-t.hatenablog.com/entry/2015/03/03/141502
       # catalog: 
       # Pool にコネクションを追加する前にコネクションの有効性を確認するための SQL。
       connection-init-sql: SELECT 1
@@ -35,12 +35,49 @@ spring:
       # data-source-properties:
       # 古いドライバ用の設定。エラーが発生しない限り指定不要。
       # driver-class-name: 
-      
-
+      # 公式ドキュメントで説明なし。デフォルト値は空。指定なし。
+      # health-check-properties: 
+      # ヘルチェック設定をカスタマイズする。デフォルト値は none。未検証のため指定なし。
+      # health-check-registry: 
+      # アイドル状態のコネクションが破棄される時間。minimumIdle < maximumPoolSize の時だけ有効。
+      idle-timeout: 600000
+      # プール初期構築時に接続失敗によってプールが「失敗する」かを指定する。デフォルト値は1。
+      # 正の値では、プールが「失敗する」と HikariCP による再接続は行わない。但し、アプリからコネクション要求が来た時にはプールの再構築を試みる。Spring Boot では、失敗してもアプリ起動はする。
+      # 0 or 負の値では、プールが失敗した後、HikariCP により再接続を繰り返す。約２秒周期で例外が出続ける。例外のログが出続けない分、正の値の方が良さそう。
+      initialization-fail-timeout: 1
+      # 接続テストのクエリを独立したトランザクションで実施するかを指定。デフォルト値はfalse。接続テストのクエリは通常副作用が無い(読み取り専用)ので分離する意味なし。
+      isolate-internal-queries: false
       # DriverManager ペースの設定: Spring Boot はこちらで設定している。 spring.datasource.url の値を引き継ぐ。
       # jdbcUrl: 
-      # 接続ユーザ名: spring.datasource.username の値を引き継ぐ。
-      # username: 
+      # 設定時間(ミリ秒)内に Pool へコネクションを返却しない場合、ログを出力する。設定可能な最小値は 2000。デフォルト値は 0 (監視しない)。 https://moznion.hatenadiary.com/entry/2015/12/22/003032
+      leak-detection-threshold: 60000
+      # コネクションの最大有効期間を指定する。DB 側の接続制限時間より数秒短く設定しておく。デフォルト値は 1800000 (30分)
+      max-lifetime: 1800000
+      # Pool の最大コネクション数。空きコネクションが無い時にコネクションを要求した場合、connectionTimeout 経過までブロックする。
+      maximum-pool-size: 10
+      # メトリクスの設定。see https://github.com/brettwooldridge/HikariCP/wiki/Dropwizard-Metrics
+      # metricRegistry: 
+      # metricsTrackerFactory: 
+      # アイドルコネクションの最小数。デフォルト値は maximumPoolSize。
+      minimumIdle: 10
       # 接続パスワード: spring.datasource.password の値を引き継ぐ。
       # password: 
-    
+      # Pool 名称。
+      pool-name: HikariPool-1
+      # Pool のコネクションを読み取り専用とするか指定する。読み取り専用モードでクエリの最適化が図られる環境では有効。
+      # Oracle は空コミットは勝手に読み取り専用トランザクションとして扱われるので設定不要。   http://www.oracle.com/technetwork/jp/articles/chapter5-1-101584-ja.html  「COLUMN 空コミットはしないほうがよいですよね？」
+      read-only: false
+      # JMX MBean 設定要否
+      register-mbeans: false
+      # 不明。デフォルト値は none。
+      # scheduled-executor: 
+      # デフォルトスキーマを指定する。デフォルト値は none。
+      # schema: 
+      # Pool で使用するスレッドの生成クラスを指定。デフォルト値は internal
+      # threadFactory: 
+      # トランザクション分離レベルを指定。デフォルト値は default
+      # transaction-isolation: 
+      # 接続ユーザ名: spring.datasource.username の値を引き継ぐ。
+      # username: 
+      # 接続テストのタイムアウト時間。250 から connectionTimeout の範囲で設定する。
+      validation-timeout: 500
