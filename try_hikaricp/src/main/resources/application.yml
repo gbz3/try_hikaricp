@@ -1,7 +1,5 @@
 spring:
   datasource:
-    # 
-    continue-on-error: true
     # JDBC ドライバのクラス名
     driver-class-name: org.postgresql.Driver
     # 接続先 URL
@@ -10,3 +8,39 @@ spring:
     username: postgres
     # 接続パスワード
     password: admin
+    # HikariCP 利用を明示
+    type: com.zaxxer.hikari.HikariDataSource
+    # Spring Boot 2.1.x にバンドルされている HikariCP 3.2.0 での設定
+    hikari:
+      # JMXで pool を休眠/再開可能とする。自動フェイルオーバ可能な環境であれば有用？未検証。
+      allow-pool-suspension: false
+      # 自動コミット: 明示的トランザクション管理を行うので無効化
+      auto-commit: false
+      # JDBC カタログを指定する。ドライバのデフォルト値を使用するため明示的に指定しない。なお、Oracle ではカタログは提供しない。 http://hito4-t.hatenablog.com/entry/2015/03/03/141502
+      # catalog: 
+      # Pool にコネクションを追加する前にコネクションの有効性を確認するための SQL。
+      connection-init-sql: SELECT 1
+      # JDBC4 準拠のドライバ(現在の標準)では設定しないことを強く推奨(by HikariCP)
+      # connection-test-query: 
+      # DB接続タイムアウト時間(ミリ秒) DefaultTransactionDefinition#setTimeout() の設定は無関係。　切断後は2秒毎に再接続を試みる。
+      # 接続失敗の CannotCreateTransactionException は PlatformTransactionManager#getTransaction(DefaultTransactionDefinition) でスローする。
+      connection-timeout: 1000
+      # DataSource インスタンスをプログラム中で直接設定する場合に使用する。これを指定すると DataSource ベースの設定が無効となる。DI するようなフレームワークが使用するので指定しない。
+      # dataSource: 
+      # DataSource ベースの設定: JDBC ドライバが提供する DataSource クラス名: HikariCP では jdbcUrl よりこちらの設定を推奨しているが、Spring Boot は jdbcUrl での設定を想定しているため指定しない
+      # data-source-class-name: 
+      # 公式ドキュメントで説明なし。デフォルト値が none なので指定しない。
+      # data-source-j-n-d-i: 
+      # 公式ドキュメントで説明なし。デフォルト値として spring.datasource.password が設定される。指定なし。
+      # data-source-properties:
+      # 古いドライバ用の設定。エラーが発生しない限り指定不要。
+      # driver-class-name: 
+      
+
+      # DriverManager ペースの設定: Spring Boot はこちらで設定している。 spring.datasource.url の値を引き継ぐ。
+      # jdbcUrl: 
+      # 接続ユーザ名: spring.datasource.username の値を引き継ぐ。
+      # username: 
+      # 接続パスワード: spring.datasource.password の値を引き継ぐ。
+      # password: 
+    
