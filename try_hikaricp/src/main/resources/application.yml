@@ -12,8 +12,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     # Spring Boot 2.1.x にバンドルされている HikariCP 3.2.0 での設定。デバッグログで表示されるプロパティが対象。時間は全てミリ秒指定。  https://github.com/brettwooldridge/HikariCP
     hikari:
-      # JMXで pool を休眠/再開可能とする。自動フェイルオーバ可能な環境であれば有用？未検証。
-      allow-pool-suspension: false
+      # JMXで pool を休眠/再開可能とする。自動フェイルオーバ可能な環境であれば有用？未検証。デフォルト値は false
+      # allow-pool-suspension: false
       # 自動コミット: 明示的トランザクション管理を行うので無効化
       auto-commit: false
       # JDBC カタログを指定する。ドライバのデフォルト値を使用するため明示的に指定しない。なお、Oracle はカタログを提供しない。 http://hito4-t.hatenablog.com/entry/2015/03/03/141502
@@ -53,7 +53,7 @@ spring:
       leak-detection-threshold: 60000
       # コネクションの最大有効期間を指定する。DB 側の接続制限時間より数秒短く設定しておく。デフォルト値は 1800000 (30分)
       max-lifetime: 1800000
-      # Pool の最大コネクション数。空きコネクションが無い時にコネクションを要求した場合、connectionTimeout 経過までブロックする。
+      # Pool の最大コネクション数(アイドル + 使用中)。空きコネクションが無い時にコネクションを要求した場合、connectionTimeout 経過までブロックする。
       maximum-pool-size: 10
       # メトリクスの設定。see https://github.com/brettwooldridge/HikariCP/wiki/Dropwizard-Metrics
       # metricRegistry: 
